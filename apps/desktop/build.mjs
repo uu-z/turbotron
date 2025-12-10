@@ -38,6 +38,14 @@ const buildPreload = () => {
           fileName: () => '[name].mjs',
         },
       },
+      esbuild: {
+        tsconfigRaw: {
+          compilerOptions: {
+            experimentalDecorators: true,
+            emitDecoratorMetadata: true,
+          },
+        },
+      },
       plugins: [reloadElectronPlugin],
     },
   }).catch((error) => console.error(`PRELOAD ERROR:\n${error}\n`))
@@ -49,6 +57,14 @@ const buildMain = () => {
     vite: {
       mode: process.env.NODE_ENV,
       build: getBuildConfig('dist/main'),
+      esbuild: {
+        tsconfigRaw: {
+          compilerOptions: {
+            experimentalDecorators: true,
+            emitDecoratorMetadata: true,
+          },
+        },
+      },
       plugins: [reloadElectronPlugin],
     },
   }).catch((error) => console.error(`MAIN ERROR:\n${error}\n`))

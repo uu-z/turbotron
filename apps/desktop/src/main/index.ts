@@ -1,6 +1,9 @@
 import { app, BrowserWindow } from 'electron'
 import isDev from 'electron-is-dev'
 import { fileURLToPath } from 'url'
+import express from 'express'
+import cors from 'cors'
+import { api } from '../server/api'
 
 const getUrl = (): string => {
   if (isDev) return 'http://localhost:3000/'
@@ -26,7 +29,27 @@ const createWindow = () => {
   isDev ? win.loadURL(url) : win.loadFile(url)
 }
 
+// 启动 Express + Remult API 服务器
+const startApiServer = () => {
+  const expressApp = express()
+  const PORT = 3001
+
+  expressApp.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    })
+  )
+  expressApp.use(express.json())
+  expressApp.use(api)
+
+  expressApp.listen(PORT, () => {
+    console.log(`Remult API server running on http://localhost:${PORT}`)
+  })
+}
+
 app.whenReady().then(() => {
+  startApiServer()
   createWindow()
 
   app.on('activate', () => {
